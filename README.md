@@ -45,7 +45,7 @@
 ### 从源码安装 / From Source
 
 ```bash
-git clone https://github.com/<your-name>/deepseek-chat-obsidian.git
+git clone https://github.com/MarSuero/deepseek-chat-obsidian.git
 cd deepseek-chat-obsidian
 npm install
 npm run build
