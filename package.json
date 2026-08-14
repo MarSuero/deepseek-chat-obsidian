@@ -1,0 +1,17 @@
+{
+  "name": "deepseek-chat",
+  "version": "0.1.0",
+  "description": "Obsidian sidebar chat powered by DeepSeek Harness (dsh)",
+  "main": "main.js",
+  "scripts": {
+    "build": "node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "esbuild": "^0.24.2",
+    "obsidian": "^1.7.2",
+    "typescript": "^5.7.2"
+  }
+}

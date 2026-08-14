@@ -1,0 +1,9 @@
+{
+  "id": "deepseek-chat",
+  "name": "DeepSeek Chat",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Embeds the DeepSeek Harness (dsh) web UI in an Obsidian sidebar panel, with auto-start for the local dsh server.",
+  "author": "十六",
+  "isDesktopOnly": true
+}
