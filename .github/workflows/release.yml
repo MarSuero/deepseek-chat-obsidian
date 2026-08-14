@@ -25,22 +25,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Update versions.json
-        run: |
-          node -e '
-            const fs = require("fs");
-            const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
-            let versions = {};
-            try { versions = JSON.parse(fs.readFileSync("versions.json", "utf8")); } catch {}
-            versions[manifest.version] = manifest.minAppVersion;
-            fs.writeFileSync("versions.json", JSON.stringify(versions, null, "\t") + "\n");
-          '
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add versions.json
-          git commit -m "chore: update versions.json for ${{ github.ref_name }}" || true
-          git push
-
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
