@@ -41,14 +41,14 @@ export class DeepSeekChatSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("启动命令")
-      .setDesc("用于启动服务器的命令，找不到时自动回退 npx")
+      .setName("启动命令名")
+      .setDesc("只填命令名，不要带参数（比如填 dsh，不是 dsh web）。找不到时自动回退 npx")
       .addText((t) =>
         t
           .setPlaceholder("dsh")
           .setValue(this.plugin.settings.command)
           .onChange(async (v) => {
-            this.plugin.settings.command = v.trim() || "dsh";
+            this.plugin.settings.command = v.trim().split(/\s+/)[0] || "dsh";
             await this.plugin.saveSettings();
           }),
       );

@@ -105,19 +105,19 @@ export class ServerManager {
 
   private async start(): Promise<{ ok: boolean; detail?: string }> {
     const resolved = await this.resolveLauncher();
-    if (!resolved.launcher) {
+    if (!resolved.command) {
       const detail = resolved.detail ?? "no launcher found (dsh/npx/npm)";
       this.log(`launcher resolution failed: ${detail}`);
       return { ok: false, detail };
     }
-    const launcher = resolved.launcher;
-    this.log(`using launcher: ${launcher}`);
+    const { command, args } = resolved;
+    this.log(`using launcher: ${command} ${(args ?? []).join(" ")}`);
     this.starting = true;
     this.setStatus({ starting: true, up: false });
     let childExited = false;
     let exitInfo = "";
     try {
-      this.child = spawn(shellCommand(launcher, ["web"]), {
+      this.child = spawn(shellCommand(command, [...(args ?? []), "web"]), {
         shell: true,
         stdio: "ignore",
         windowsHide: true,
@@ -168,12 +168,15 @@ export class ServerManager {
   }
 
   /** 找到可用的启动命令：dsh → npx → npm exec 回退。 */
-  private async resolveLauncher(): Promise<{ launcher?: string; detail?: string }> {
+  private async resolveLauncher(): Promise<{ command?: string; args?: string[]; detail?: string }> {
     const failures: string[] = [];
-    const configured = await this.canRun(this.cfg.command);
+    // command 含空格说明配置填错了（应该只填命令名），直接跳过走回退
+    const configured = /\s/.test(this.cfg.command)
+      ? { ok: false, detail: "command contains spaces" }
+      : await this.canRun(this.cfg.command);
     if (configured.ok) {
       this.log(`launcher hit configured command = ${this.cfg.command}`);
-      return { launcher: this.cfg.command };
+      return { command: this.cfg.command, args: [] };
     }
     failures.push(`${this.cfg.command}:${configured.detail}`);
     this.log(`command "${this.cfg.command}" unavailable (${configured.detail}), trying npx fallback`);
@@ -181,7 +184,7 @@ export class ServerManager {
       const r = await this.canRun(npx);
       if (r.ok) {
         this.log(`npx available: ${npx}`);
-        return { launcher: `${npx} --yes @deepseek-ai/dsh@latest` };
+        return { command: npx, args: ["--yes", "@deepseek-ai/dsh@latest"] };
       }
       failures.push(`${npx}:${r.detail}`);
     }
@@ -189,7 +192,7 @@ export class ServerManager {
       const r = await this.canRun(npm);
       if (r.ok) {
         this.log(`npm available: ${npm}`);
-        return { launcher: `${npm} exec --yes @deepseek-ai/dsh@latest` };
+        return { command: npm, args: ["exec", "--yes", "@deepseek-ai/dsh@latest"] };
       }
       failures.push(`${npm}:${r.detail}`);
     }

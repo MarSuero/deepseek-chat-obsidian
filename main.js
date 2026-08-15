@@ -98,19 +98,19 @@ var ServerManager = class {
   async start() {
     var _a, _b, _c, _d;
     const resolved = await this.resolveLauncher();
-    if (!resolved.launcher) {
+    if (!resolved.command) {
       const detail2 = (_a = resolved.detail) != null ? _a : "no launcher found (dsh/npx/npm)";
       this.log(`launcher resolution failed: ${detail2}`);
       return { ok: false, detail: detail2 };
     }
-    const launcher = resolved.launcher;
-    this.log(`using launcher: ${launcher}`);
+    const { command, args } = resolved;
+    this.log(`using launcher: ${command} ${(args != null ? args : []).join(" ")}`);
     this.starting = true;
     this.setStatus({ starting: true, up: false });
     let childExited = false;
     let exitInfo = "";
     try {
-      this.child = (0, import_child_process.spawn)(shellCommand(launcher, ["web"]), {
+      this.child = (0, import_child_process.spawn)(shellCommand(command, [...args != null ? args : [], "web"]), {
         shell: true,
         stdio: "ignore",
         windowsHide: true,
@@ -161,10 +161,10 @@ var ServerManager = class {
   /** 找到可用的启动命令：dsh → npx → npm exec 回退。 */
   async resolveLauncher() {
     const failures = [];
-    const configured = await this.canRun(this.cfg.command);
+    const configured = /\s/.test(this.cfg.command) ? { ok: false, detail: "command contains spaces" } : await this.canRun(this.cfg.command);
     if (configured.ok) {
       this.log(`launcher hit configured command = ${this.cfg.command}`);
-      return { launcher: this.cfg.command };
+      return { command: this.cfg.command, args: [] };
     }
     failures.push(`${this.cfg.command}:${configured.detail}`);
     this.log(`command "${this.cfg.command}" unavailable (${configured.detail}), trying npx fallback`);
@@ -172,7 +172,7 @@ var ServerManager = class {
       const r = await this.canRun(npx);
       if (r.ok) {
         this.log(`npx available: ${npx}`);
-        return { launcher: `${npx} --yes @deepseek-ai/dsh@latest` };
+        return { command: npx, args: ["--yes", "@deepseek-ai/dsh@latest"] };
       }
       failures.push(`${npx}:${r.detail}`);
     }
@@ -180,7 +180,7 @@ var ServerManager = class {
       const r = await this.canRun(npm);
       if (r.ok) {
         this.log(`npm available: ${npm}`);
-        return { launcher: `${npm} exec --yes @deepseek-ai/dsh@latest` };
+        return { command: npm, args: ["exec", "--yes", "@deepseek-ai/dsh@latest"] };
       }
       failures.push(`${npm}:${r.detail}`);
     }
@@ -379,9 +379,9 @@ var DeepSeekChatSettingTab = class extends import_obsidian2.PluginSettingTab {
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian2.Setting(containerEl).setName("\u542F\u52A8\u547D\u4EE4").setDesc("\u7528\u4E8E\u542F\u52A8\u670D\u52A1\u5668\u7684\u547D\u4EE4\uFF0C\u627E\u4E0D\u5230\u65F6\u81EA\u52A8\u56DE\u9000 npx").addText(
+    new import_obsidian2.Setting(containerEl).setName("\u542F\u52A8\u547D\u4EE4\u540D").setDesc("\u53EA\u586B\u547D\u4EE4\u540D\uFF0C\u4E0D\u8981\u5E26\u53C2\u6570\uFF08\u6BD4\u5982\u586B dsh\uFF0C\u4E0D\u662F dsh web\uFF09\u3002\u627E\u4E0D\u5230\u65F6\u81EA\u52A8\u56DE\u9000 npx").addText(
       (t) => t.setPlaceholder("dsh").setValue(this.plugin.settings.command).onChange(async (v) => {
-        this.plugin.settings.command = v.trim() || "dsh";
+        this.plugin.settings.command = v.trim().split(/\s+/)[0] || "dsh";
         await this.plugin.saveSettings();
       })
     );
