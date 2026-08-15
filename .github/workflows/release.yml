@@ -29,7 +29,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ github.ref_name }}" \
-            --title "${{ github.ref_name }}" \
-            --generate-notes \
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          NOTES=$(awk -v ver="$VERSION" 'index($0, "## [" ver "]")==1 {f=1; next} f && index($0, "## [")==1 {exit} f' CHANGELOG.md)
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes "${NOTES:-Release $TAG}" \
             main.js manifest.json styles.css

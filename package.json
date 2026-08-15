@@ -1,6 +1,6 @@
 {
   "name": "deepseek-chat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Obsidian sidebar chat powered by DeepSeek Harness (dsh)",
   "main": "main.js",
   "scripts": {
