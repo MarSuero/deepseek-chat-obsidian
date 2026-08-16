@@ -2,7 +2,7 @@
 
 ## 建议搭配 / Recommended Companion
 
-[**dsh-web-mobile**](https://github.com/mexiaosqwq/dsh-web-mobile) 专门为 DSH Web 界面做了窄屏 UI 适配，跟本插件配合使用，手机端体验会好很多。强烈建议搭配。
+[**dsh-web-mobile**](https://github.com/mexiaosqwq/dsh-web-mobile) 专门为 DSH Web 界面做了窄屏 UI 适配，跟本插件配合使用，强烈建议搭配。
 
 > [**dsh-web-mobile**](https://github.com/mexiaosqwq/dsh-web-mobile) adapts the DSH web UI for narrow screens. Pairs perfectly with this plugin — highly recommended for a much better mobile experience.
 
