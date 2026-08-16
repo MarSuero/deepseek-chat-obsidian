@@ -1,5 +1,11 @@
 # DeepSeek Chat for Obsidian
 
+## 建议搭配 / Recommended Companion
+
+[**dsh-web-mobile**](https://github.com/mexiaosqwq/dsh-web-mobile) 专门为 DSH Web 界面做了窄屏 UI 适配，跟本插件配合使用，手机端体验会好很多。强烈建议搭配。
+
+> [**dsh-web-mobile**](https://github.com/mexiaosqwq/dsh-web-mobile) adapts the DSH web UI for narrow screens. Pairs perfectly with this plugin — highly recommended for a much better mobile experience.
+
 把 [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) 的 Web 界面嵌入 Obsidian 侧边栏，并在打开面板时自动拉起本地 `dsh web` 服务。
 
 > Embed the DeepSeek Harness (DSH) web UI inside an Obsidian sidebar panel, with auto-start for the local `dsh web` server.
