@@ -1,5 +1,7 @@
 # DeepSeek Chat for Obsidian
 
+![DeepSeek Chat for Obsidian 预览](assets/preview.png)
+
 ## 建议搭配 / Recommended Companion
 
 [**dsh-web-mobile**](https://github.com/mexiaosqwq/dsh-web-mobile) 专门为 DSH Web 界面做了窄屏 UI 适配，跟本插件配合使用，强烈建议搭配。
